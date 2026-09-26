@@ -14,7 +14,7 @@ import {
  * invariant with it: the sealed state paints no carmine at all. Once the
  * organizer opens the envelopes, both flip.
  *
- * Runs against the MSW mocks of docs/API.md (VITE_USE_MOCKS=true). The whole
+ * Runs against the MSW mocks of the API (VITE_USE_MOCKS=true). The whole
  * flow stays inside one browser context because the mock database lives in
  * that context's localStorage.
  */

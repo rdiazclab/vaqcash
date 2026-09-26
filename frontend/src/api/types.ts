@@ -1,5 +1,5 @@
 /**
- * Mirrors docs/API.md (v2) literally. Money is always an integer number of
+ * Mirrors what backend/src/interfaces/http/ serves. Money is always an integer number of
  * cents; nothing in this file ever holds a decimal amount.
  */
 

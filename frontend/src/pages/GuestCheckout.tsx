@@ -140,7 +140,7 @@ function Flow({ box }: { box: PublicBoxView }) {
     setStep('processing');
     try {
       // The card details deliberately never leave the browser: the contract in
-      // docs/API.md carries no PAN, and a real integration would tokenise first.
+      // The API carries no PAN, and a real integration would tokenise first.
       const created = await api.contribute(box.uuid, {
         amountCents: amountCents!,
         displayName: anonymous ? undefined : displayName.trim(),

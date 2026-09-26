@@ -1,4 +1,4 @@
-/** The error codes docs/API.md commits to, plus the transport failure case. */
+/** The error codes the API commits to, plus the transport failure case. */
 export type ApiErrorCode =
   | 'VALIDATION_ERROR'
   | 'UNAUTHORIZED'

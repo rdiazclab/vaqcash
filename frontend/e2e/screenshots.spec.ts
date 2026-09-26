@@ -10,7 +10,7 @@ import { assertNoAccentPainted, assertNoVerticalScroll, loginDemo } from './help
 /*
  * Test runs drop the captures in e2e/screenshots, which is gitignored. The
  * README needs the same states committed, so `npm run screenshots` points DIR
- * at docs/screenshots instead of keeping a second, drifting copy of the flow.
+ * at screenshots/ instead of keeping a second, drifting copy of the flow.
  */
 const DIR = process.env.SHOTS_DIR ?? 'e2e/screenshots';
 const SEALED_BOX = 'box_grado';
@@ -104,4 +104,30 @@ test.describe('teléfono de 360x640', () => {
     await assertNoVerticalScroll(page, 'recibo');
     await shot(page, 'small-checkout-recibo');
   });
+});
+
+/*
+ * Las cuatro únicas capturas que se versionan, para el README: la cajita
+ * sellada y la revelada, en teléfono y en escritorio. Se etiquetan @docs
+ * porque `npm run screenshots` las filtra; el resto de este archivo produce
+ * artefactos de prueba que no se commitean.
+ */
+test.describe('capturas del README @docs', () => {
+  for (const [label, viewport] of [
+    ['mobile', MOBILE],
+    ['desktop', DESKTOP],
+  ] as const) {
+    test(`${label} sellada y revelada @docs`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await loginDemo(page);
+
+      await page.goto(`/cajitas/${SEALED_BOX}`);
+      await expect(page.getByTestId('total-value')).toHaveText('? ? ?');
+      await shot(page, `${label}-sellada`, true);
+
+      await page.goto(`/cajitas/${REVEALED_BOX}`);
+      await expect(page.locator('.envelope--open').first()).toBeVisible();
+      await shot(page, `${label}-revelada`, true);
+    });
+  }
 });

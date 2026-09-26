@@ -4,7 +4,8 @@
 marca es una **vaquita con manchas carmín**: simpática de lejos, sobria de cerca,
 porque la app mueve dinero real.
 
-Paleta heredada de `docs/DESIGN.md`. No se introdujo ningún color nuevo.
+Paleta heredada de los tokens del front (`frontend/src/styles/app.css`). No se
+introdujo ningún color nuevo.
 
 ## Archivos
 

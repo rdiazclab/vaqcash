@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
-    "screenshots": "SHOTS_DIR=../docs/screenshots playwright test screenshots.spec.ts"
+    "screenshots": "SHOTS_DIR=../screenshots playwright test screenshots.spec.ts --grep @docs"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",

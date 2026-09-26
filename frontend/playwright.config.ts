@@ -4,7 +4,7 @@ const PORT = Number(process.env.E2E_PORT ?? 5175);
 const BASE_URL = process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`;
 
 /**
- * The suite drives the real browser against the MSW mocks of docs/API.md,
+ * The suite drives the real browser against the MSW mocks of the API,
  * because the v2 API does not exist yet. Flipping VITE_USE_MOCKS to false makes
  * the very same suite exercise the real backend.
  *

@@ -41,51 +41,21 @@ ninguna ruta de la API.
 
 ## Capturas
 
-La app está diseñada primero para el teléfono: el invitado que aporta llega casi
-siempre desde un QR pegado en una mesa o un link por WhatsApp. Las capturas salen
-de `frontend/e2e/screenshots.spec.ts`, el mismo test que verifica que el checkout
-cabe sin scroll en una pantalla de 360x640.
+El contraste que sostiene el producto. Sellada, el total son tres interrogantes y
+los sobres se ven idénticos entre sí; los montos no están escondidos con CSS, es
+que el backend no los serializa mientras la cajita esté cerrada. Al abrirla
+aparecen el total, cada sobre con su nombre y su mensaje, y el saldo acreditado
+en la wallet.
 
-### La cajita sellada y la cajita abierta
-
-El contraste que sostiene el producto. Mientras está sellada no hay un solo monto
-en pantalla, ni un solo píxel de carmín; al abrirla aparecen el total, cada sobre
-y el saldo acreditado en la wallet.
-
-| Sellada | Revelada |
-|---|---|
-| <img src="docs/screenshots/mobile-dashboard-sealed.png" width="320" alt="Cajita sellada: el total aparece como tres interrogantes y los cinco sobres se ven idénticos, sin nombre ni monto"> | <img src="docs/screenshots/mobile-dashboard-revealed.png" width="320" alt="Cajita revelada: total de 400.000, tres sobres abiertos con nombre, monto y mensaje"> |
-
-Los interrogantes no son un truco de CSS. El backend no serializa los montos
-mientras la cajita está sellada, así que el número nunca cruza la red.
-
-### El aporte del invitado
-
-Sin cuenta, sin descargar nada: se abre el link, se pone el monto y se paga.
-
-| Aporte | Recibo | Crear cajita |
+| | Sellada | Revelada |
 |---|---|---|
-| <img src="docs/screenshots/mobile-checkout-monto.png" width="240" alt="Formulario de aporte con montos sugeridos y casilla para aportar de forma anónima"> | <img src="docs/screenshots/small-checkout-recibo.png" width="240" alt="Recibo del aporte en una pantalla de 360x640"> | <img src="docs/screenshots/mobile-crear-cajita.png" width="240" alt="Formulario de creación de cajita con título, moneda y fecha de revelación"> |
+| **Móvil** | <img src="screenshots/mobile-sellada.png" width="230" alt="VaqCash en móvil: cajita sellada, el total son tres interrogantes y los cinco sobres se ven idénticos"> | <img src="screenshots/mobile-revelada.png" width="230" alt="VaqCash en móvil: cajita revelada con total de 400.000 y tres sobres abiertos con nombre y mensaje"> |
+| **Escritorio** | <img src="screenshots/desktop-sellada.png" width="430" alt="VaqCash en escritorio: cajita sellada con el total oculto"> | <img src="screenshots/desktop-revelada.png" width="430" alt="VaqCash en escritorio: cajita revelada con los sobres en tres columnas"> |
 
-### Wallet y acceso
-
-| Wallet con retiro | Entrar |
-|---|---|
-| <img src="docs/screenshots/mobile-wallet-retiro.png" width="240" alt="Wallet con saldo y el formulario de retiro abierto"> | <img src="docs/screenshots/mobile-login.png" width="240" alt="Pantalla de entrar a VaqCash"> |
-
-### Escritorio
-
-<img src="docs/screenshots/desktop-wallet-retiro.png" width="720" alt="Wallet en escritorio con el formulario de retiro abierto">
-
-Para regenerarlas, con las dependencias del front instaladas:
-
-```bash
-cd frontend
-npm run screenshots   # escribe en docs/screenshots/
-```
-
-Corren contra los mocks MSW, que traen una organizadora con cajitas ya pobladas,
-por eso los links de las capturas apuntan a `localhost`.
+Se regeneran con `npm run screenshots` desde `frontend/`. Salen de
+`e2e/screenshots.spec.ts`, el mismo test que verifica que el checkout del
+invitado cabe sin scroll en un teléfono de 360x640, contra los mocks MSW que
+traen una organizadora con cajitas ya pobladas.
 
 ## Correr en local
 
@@ -129,8 +99,8 @@ Todas vienen con valor en `backend/.env.example`.
 | `PAYMENT_FAILURE_RATE` | `0` | Probabilidad de rechazo, de 0 a 1. Pon `1` para ejercitar el 402 |
 
 Si cambias los puertos, cambia `CORS_ORIGIN` y `PUBLIC_WEB_URL` en el backend y
-`VITE_API_URL` en el front a la vez. El front trae mocks MSW que implementan
-`docs/API.md` al pie de la letra: `VITE_USE_MOCKS=false` lo apunta a la API real.
+`VITE_API_URL` en el front a la vez. El front trae mocks MSW que implementan el mismo contrato que sirve el backend
+en `backend/src/interfaces/http/`: `VITE_USE_MOCKS=false` lo apunta a la API real.
 
 ## Pruebas
 
@@ -154,15 +124,6 @@ El test que más importa es el guarda antifuga de
 `backend/tests/event.presenter.test.ts`: serializa la vista sellada y falla si
 aparece cualquier monto. Está verificado por mutación, inyectar `amountCents` en
 la rama sellada tumba varios tests, así que no es decorativo.
-
-## Documentación
-
-- [`docs/API.md`](docs/API.md): contrato de la API. Rutas, cuerpos, forma de las
-  respuestas, tabla de monedas y códigos de error. Es la fuente de verdad que el
-  front implementa.
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): modelo de datos, las decisiones
-  que lo sostienen, estructura de carpetas y estrategia de link y QR.
-- [`docs/DESIGN.md`](docs/DESIGN.md): dirección de diseño, tokens y movimiento.
 
 ## Concurrencia: por qué el total anunciado no cambia
 
