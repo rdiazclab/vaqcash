@@ -1,5 +1,7 @@
 # VaqCash
 
+**En vivo:** <https://vaqcash-web.onrender.com> · API en <https://vaqcash-api.onrender.com>
+
 Aportes en grupo con revelación diferida. En Colombia, "hacer una vaca" es juntar
 plata entre varios para un regalo, un viaje o una fiesta: cada uno pone lo que
 puede y alguien recoge. VaqCash (vaca + cash) digitaliza exactamente eso y le
@@ -36,6 +38,54 @@ tests que fallan si un monto aparece en una respuesta sellada.
 El anonimato funciona igual: `Contribution.displayName` vale literalmente
 "Anónimo" y la identidad real solo existe en `AuditLog`, que no se expone por
 ninguna ruta de la API.
+
+## Capturas
+
+La app está diseñada primero para el teléfono: el invitado que aporta llega casi
+siempre desde un QR pegado en una mesa o un link por WhatsApp. Las capturas salen
+de `frontend/e2e/screenshots.spec.ts`, el mismo test que verifica que el checkout
+cabe sin scroll en una pantalla de 360x640.
+
+### La cajita sellada y la cajita abierta
+
+El contraste que sostiene el producto. Mientras está sellada no hay un solo monto
+en pantalla, ni un solo píxel de carmín; al abrirla aparecen el total, cada sobre
+y el saldo acreditado en la wallet.
+
+| Sellada | Revelada |
+|---|---|
+| <img src="docs/screenshots/mobile-dashboard-sealed.png" width="320" alt="Cajita sellada: el total aparece como tres interrogantes y los cinco sobres se ven idénticos, sin nombre ni monto"> | <img src="docs/screenshots/mobile-dashboard-revealed.png" width="320" alt="Cajita revelada: total de 400.000, tres sobres abiertos con nombre, monto y mensaje"> |
+
+Los interrogantes no son un truco de CSS. El backend no serializa los montos
+mientras la cajita está sellada, así que el número nunca cruza la red.
+
+### El aporte del invitado
+
+Sin cuenta, sin descargar nada: se abre el link, se pone el monto y se paga.
+
+| Aporte | Recibo | Crear cajita |
+|---|---|---|
+| <img src="docs/screenshots/mobile-checkout-monto.png" width="240" alt="Formulario de aporte con montos sugeridos y casilla para aportar de forma anónima"> | <img src="docs/screenshots/small-checkout-recibo.png" width="240" alt="Recibo del aporte en una pantalla de 360x640"> | <img src="docs/screenshots/mobile-crear-cajita.png" width="240" alt="Formulario de creación de cajita con título, moneda y fecha de revelación"> |
+
+### Wallet y acceso
+
+| Wallet con retiro | Entrar |
+|---|---|
+| <img src="docs/screenshots/mobile-wallet-retiro.png" width="240" alt="Wallet con saldo y el formulario de retiro abierto"> | <img src="docs/screenshots/mobile-login.png" width="240" alt="Pantalla de entrar a VaqCash"> |
+
+### Escritorio
+
+<img src="docs/screenshots/desktop-wallet-retiro.png" width="720" alt="Wallet en escritorio con el formulario de retiro abierto">
+
+Para regenerarlas, con las dependencias del front instaladas:
+
+```bash
+cd frontend
+npm run screenshots   # escribe en docs/screenshots/
+```
+
+Corren contra los mocks MSW, que traen una organizadora con cajitas ya pobladas,
+por eso los links de las capturas apuntan a `localhost`.
 
 ## Correr en local
 
@@ -128,14 +178,43 @@ total. El pago a la wallet es exactamente-una-vez porque
 
 ## Despliegue
 
-1. Sube el repo a GitHub. Vercel y Render importan desde ahí.
-2. Backend y base de datos: Render, New, **Blueprint**, apuntando al repo. El
-   [`render.yaml`](render.yaml) de la raíz crea el Postgres y el web service,
-   cablea `DATABASE_URL` y expone el health check en `/health`. `npm start` corre
-   `prisma migrate deploy` antes de arrancar.
-3. Frontend: Vercel, import repo, root `frontend/`, framework Vite, env
-   `VITE_API_URL=https://<servicio>.onrender.com/api`. Cierra el círculo poniendo
-   en Render `CORS_ORIGIN` y `PUBLIC_WEB_URL` con el dominio final de Vercel.
+La app está desplegada entera en Render, los dos servicios y la base, a partir
+del [`render.yaml`](render.yaml) de la raíz.
+
+| | URL |
+|---|---|
+| App | <https://vaqcash-web.onrender.com> |
+| API | <https://vaqcash-api.onrender.com> |
+| Health check | <https://vaqcash-api.onrender.com/health> |
+
+Para levantarlo de cero: Render, **New**, **Blueprint**, apuntando al repo. El
+blueprint crea los tres recursos, cablea `DATABASE_URL` desde la base, genera
+`JWT_SECRET` solo y deja escritas las URLs públicas, así que no hay que tocar
+ninguna variable a mano. `npm start` corre `prisma migrate deploy` antes de
+arrancar, de modo que las migraciones se aplican en cada deploy.
+
+### Dos cosas que hacen fallar el blueprint
+
+Ambas costaron un deploy fallido, así que quedan anotadas:
+
+- **`sync: false` no significa "opcional"**: Render crea la variable vacía.
+  `PUBLIC_WEB_URL` y `CORS_ORIGIN` pasan por `requiredInProduction` en
+  `backend/src/config/env.ts`, que lanza excepción si faltan en producción, y la
+  API moría antes de escuchar en el puerto. Por eso van con la URL escrita.
+- **Render exporta `NODE_ENV=production` también durante el build**, y con esa
+  variable `npm install` se salta las `devDependencies`. Sin ellas no existen ni
+  el CLI de Prisma ni `tsc`. El build command usa `npm ci --include=dev`.
+
+Renombrar un recurso en el blueprint no lo renombra: Render crea uno nuevo y deja
+el viejo huérfano. Como el plan free admite una sola base Postgres por workspace,
+hay que borrar la anterior antes de sincronizar.
+
+### Límites del plan free
+
+La API se duerme a los 15 minutos de inactividad y el arranque en frío tarda cerca
+de un minuto. Antes de una demo conviene abrir el health check y esperar el
+`{"ok":true}`. El sitio estático no se duerme: siempre es la primera llamada a la
+API la que se cuelga. La base de datos free expira a los 30 días.
 
 ## Deuda técnica consciente (YAGNI)
 
@@ -145,7 +224,6 @@ total. El pago a la wallet es exactamente-una-vez porque
 - La revelación programada se evalúa en lectura (`revealAt <= now`), no hay cron.
 - El balance de la wallet es un caché del ledger. Si discrepan gana el ledger, pero
   no hay job que lo reconcilie.
-- Plan free de Render: el primer request tras inactividad tarda unos 30 s en despertar.
 
 ## Flake conocido en la suite de backend
 

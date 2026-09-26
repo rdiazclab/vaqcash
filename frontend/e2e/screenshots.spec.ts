@@ -7,7 +7,12 @@ import { assertNoAccentPainted, assertNoVerticalScroll, loginDemo } from './help
  * phone. The 360x640 checks below take no screenshots; they exist to fail the
  * build if the guest checkout ever stops fitting on a small phone.
  */
-const DIR = 'e2e/screenshots';
+/*
+ * Test runs drop the captures in e2e/screenshots, which is gitignored. The
+ * README needs the same states committed, so `npm run screenshots` points DIR
+ * at docs/screenshots instead of keeping a second, drifting copy of the flow.
+ */
+const DIR = process.env.SHOTS_DIR ?? 'e2e/screenshots';
 const SEALED_BOX = 'box_grado';
 const REVEALED_BOX = 'box_despedida';
 const SEALED_UUID = 'f7c1a94e-3b52-4d10-9a77-0e2b5c81d4aa';
