@@ -1,5 +1,6 @@
 import { CheckCircle, Lock } from '@phosphor-icons/react';
 import { CountUpMoney, Money } from '../ui/Money';
+import { CowWatermark } from './CowWatermark';
 import type { WalletCredit } from '../api/types';
 
 /**
@@ -66,7 +67,16 @@ export function RevealedTotalPanel({
 }) {
   const hasPending = pendingRefundCount > 0 || settledTotalCents !== totalCents;
   return (
-    <section className="rounded-[12px] border border-rule bg-surface p-5 shadow-[var(--shadow-card)] sm:p-7">
+    <section className="relative isolate overflow-hidden rounded-[12px] border border-rule bg-surface p-5 shadow-[var(--shadow-card)] sm:p-7">
+      {/* The only carmine cow in the product. She shows up when the box opens
+          and nowhere else, which is the whole colour rule in one object. */}
+      <CowWatermark
+        tone="brand"
+        size={170}
+        markClassName="size-[118px] sm:size-[170px]"
+        enter={justRevealed}
+        className="-bottom-7 -right-3 sm:-bottom-10 sm:right-6"
+      />
       <div className="flex items-center gap-2 text-accent">
         <CheckCircle size={16} weight="fill" aria-hidden="true" />
         <h2 className="text-[13px] font-medium uppercase tracking-[0.14em]">Total revelado</h2>

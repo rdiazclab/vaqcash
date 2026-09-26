@@ -9,18 +9,27 @@ export function Skeleton({ className = '' }: { className?: string }) {
 
 export function EmptyState({
   icon: IconGlyph,
+  illustration,
   title,
   body,
   action,
 }: {
   icon: Icon;
+  /**
+   * Replaces the glyph when a state deserves the product's own face instead of
+   * a library icon. Reserved for first use: everywhere else the icon names the
+   * kind of thing that is missing, which is more useful than personality.
+   */
+  illustration?: React.ReactNode;
   title: string;
   body: string;
   action?: React.ReactNode;
 }) {
   return (
     <div className="flex flex-col items-center rounded-[12px] border border-dashed border-rule bg-surface px-6 py-14 text-center">
-      <IconGlyph size={32} weight="duotone" className="text-ink-muted" aria-hidden="true" />
+      {illustration ?? (
+        <IconGlyph size={32} weight="duotone" className="text-ink-muted" aria-hidden="true" />
+      )}
       <h2 className="mt-4 text-lg font-medium tracking-tight text-ink">{title}</h2>
       <p className="mt-2 max-w-[42ch] text-[14px] leading-relaxed text-ink-muted">{body}</p>
       {action ? <div className="mt-6">{action}</div> : null}

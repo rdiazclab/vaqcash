@@ -7,6 +7,7 @@ import { formatDate } from '../lib/money';
 import { ButtonLink } from '../ui/Button';
 import { EmptyState, ErrorState } from '../ui/States';
 import { AppShell } from '../components/AppShell';
+import { LogoMark } from '../components/Logo';
 
 export function Cajitas() {
   const { status, data, error, reload } = useAsync(() => api.listEvents(), []);
@@ -42,6 +43,9 @@ export function Cajitas() {
         {status === 'ready' && data.length === 0 ? (
           <EmptyState
             icon={Stack}
+            // First run: the one screen where the cow introduces herself rather
+            // than a glyph naming what is absent.
+            illustration={<LogoMark size={52} tone="ink" className="text-ink-muted" />}
             title="Todavía no tienes cajitas"
             body="Crea la primera, comparte el link en el grupo y los sobres empiezan a llegar sellados."
             action={

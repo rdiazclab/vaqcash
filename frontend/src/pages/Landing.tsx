@@ -12,6 +12,7 @@ import {
 import { useAuth } from '../auth/AuthContext';
 import { ButtonLink } from '../ui/Button';
 import { ThemeToggle } from '../ui/ThemeToggle';
+import { CowWatermark } from '../components/CowWatermark';
 import { Wordmark } from '../components/Wordmark';
 
 export function Landing() {
@@ -52,10 +53,12 @@ export function Landing() {
         <AccountSection />
       </main>
 
-      <footer className="border-t border-rule">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 sm:flex-row sm:items-center sm:px-6">
+      {/* The cow watches the last line of the page from just below the fold. */}
+      <footer className="relative isolate overflow-hidden border-t border-rule">
+        <CowWatermark size={150} className="-bottom-10 left-1/2 -translate-x-1/2" />
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 pb-32 pt-12 sm:flex-row sm:items-center sm:px-6 sm:pt-14">
           <Wordmark tone="brand" />
-          <p className="text-[13px] text-ink-muted sm:ml-auto">
+          <p className="max-w-[52ch] text-[13px] leading-relaxed text-ink-muted sm:ml-auto sm:text-right">
             Los aportes se guardan sellados. Los montos solo se muestran cuando el organizador abre
             la cajita.
           </p>
