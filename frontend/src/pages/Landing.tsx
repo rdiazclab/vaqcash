@@ -55,8 +55,14 @@ export function Landing() {
 
       {/* The cow watches the last line of the page from just below the fold. */}
       <footer className="relative isolate overflow-hidden border-t border-rule">
-        <CowWatermark size={150} className="-bottom-10 left-1/2 -translate-x-1/2" />
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 pb-32 pt-12 sm:flex-row sm:items-center sm:px-6 sm:pt-14">
+        <CowWatermark
+          size={190}
+          markClassName="size-[150px] sm:size-[190px]"
+          className="-bottom-11 -right-8"
+        />
+        {/* The bottom padding is the cow's room: less and her horns would reach
+            into the last line of text. */}
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 pb-32 pt-12 sm:flex-row sm:items-center sm:px-6 sm:pb-36 sm:pt-14">
           <Wordmark tone="brand" />
           <p className="max-w-[52ch] text-[13px] leading-relaxed text-ink-muted sm:ml-auto sm:text-right">
             Los aportes se guardan sellados. Los montos solo se muestran cuando el organizador abre

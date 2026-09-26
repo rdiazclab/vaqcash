@@ -12,6 +12,7 @@ import { AppShell } from '../components/AppShell';
 import { ShareCard } from '../components/ShareCard';
 import { EnvelopeGrid, EnvelopeGridSkeleton } from '../components/EnvelopeGrid';
 import { RevealButton } from '../components/RevealButton';
+import { RevealConfetti } from '../components/RevealConfetti';
 import {
   RevealedTotalPanel,
   SealedTotalPanel,
@@ -107,6 +108,9 @@ function Loaded({
 
   return (
     <div className="mt-6">
+      {/* Only on the press, never on a later visit to an already open box. */}
+      {justRevealed ? <RevealConfetti /> : null}
+
       <header>
         <div className="flex items-center gap-2 text-[13px] text-ink-muted">
           {revealed ? (
