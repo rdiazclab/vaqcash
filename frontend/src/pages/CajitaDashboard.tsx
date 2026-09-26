@@ -6,6 +6,7 @@ import { ApiError, humanMessage } from '../api/errors';
 import { isRevealed, type DashboardView, type RevealedDashboardView } from '../api/types';
 import { formatDateTime } from '../lib/money';
 import { useAsync } from '../lib/useAsync';
+import { usePolling } from '../lib/usePolling';
 import { ButtonLink } from '../ui/Button';
 import { EmptyState, ErrorState, FormError, Skeleton } from '../ui/States';
 import { AppShell } from '../components/AppShell';
@@ -21,12 +22,25 @@ import {
 
 export function CajitaDashboard() {
   const { id = '' } = useParams();
-  const { status, data, error, reload, replace } = useAsync(() => api.getDashboard(id), [id]);
+  const { status, data, error, reload, refresh, replace } = useAsync(
+    () => api.getDashboard(id),
+    [id],
+  );
 
   /** Distinguishes "just opened by this click" from "was already open on load". */
   const [justRevealed, setJustRevealed] = useState(false);
   const [revealPending, setRevealPending] = useState(false);
   const [revealError, setRevealError] = useState<string | null>(null);
+
+  /*
+   * Envelopes arrive while the organizer watches this screen, so it polls
+   * instead of waiting for a reload. Only while the box is sealed: once it is
+   * open nothing can change, and refetching forever would be pure noise. It
+   * also pauses during the reveal itself, so a poll landing mid-request cannot
+   * overwrite the revealed view with a stale sealed one.
+   */
+  const sealed = data ? !isRevealed(data) : false;
+  usePolling(refresh, { enabled: sealed && !revealPending, intervalMs: 6000 });
 
   const reveal = useCallback(async () => {
     setRevealPending(true);
