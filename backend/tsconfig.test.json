@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": ".",
+    // Vitest runs these files as ESM, so top-level await in
+    // payment-failure.integration.test.ts is legal there even though src/ builds to CJS.
+    "module": "es2022",
+    "moduleResolution": "node",
+    "types": ["node", "vitest/globals"]
+  },
+  "include": ["src", "tests", "vitest.config.mts"]
+}

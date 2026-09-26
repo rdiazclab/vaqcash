@@ -1,0 +1,149 @@
+/* Geist and Geist Mono, self-hosted through fontsource. No <link> to Google Fonts. */
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+@import 'tailwindcss';
+
+/*
+ * The design direction in one line: colour is the reward.
+ * Every sealed surface is built from --paper / --surface / --ink / --rule only.
+ * --accent (carmine) is reserved for the revealed state and the primary CTA of
+ * the marketing site. It must never appear on a sealed dashboard or checkout.
+ */
+:root {
+  --paper: #fafaf8;
+  --surface: #ffffff;
+  --surface-sunken: #f1f1ee;
+  --ink: #17171a;
+  --ink-muted: #5e5e66;
+  --rule: #e3e3de;
+  --accent: #b0203f;
+  --accent-ink: #ffffff;
+  /* Shadows are tinted to the paper hue, never pure black. */
+  --shadow-card: 0 1px 2px rgb(23 23 26 / 0.04), 0 8px 24px -12px rgb(23 23 26 / 0.12);
+  color-scheme: light;
+}
+
+/* System preference, unless a manual choice pinned light. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --paper: #121213;
+    --surface: #1a1a1c;
+    --surface-sunken: #0c0c0d;
+    --ink: #f4f4f2;
+    --ink-muted: #9c9ca5;
+    --rule: #2a2a2e;
+    --accent: #e85a76;
+    --accent-ink: #17171a;
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+    color-scheme: dark;
+  }
+}
+
+/* Manual toggle, persisted. */
+:root[data-theme='dark'] {
+  --paper: #121213;
+  --surface: #1a1a1c;
+  --surface-sunken: #0c0c0d;
+  --ink: #f4f4f2;
+  --ink-muted: #9c9ca5;
+  --rule: #2a2a2e;
+  --accent: #e85a76;
+  --accent-ink: #17171a;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+/* `inline` keeps the var() reference in the generated utility, so bg-paper and
+ * friends follow the runtime theme instead of freezing the light value. */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-sunken: var(--surface-sunken);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+
+  /* One radius scale: 12px on cards and fields, full on buttons and chips. */
+  --radius-card: 12px;
+}
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Visible focus ring on every interactive control, in both themes. */
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--ink);
+    color: var(--paper);
+  }
+}
+
+@layer components {
+  /* Money is mono and column-aligned or it cannot be read. */
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+
+  /* A sealed envelope is defined by a dashed rule, not by elevation. */
+  .envelope-sealed {
+    border: 1px dashed var(--rule);
+    background: var(--surface);
+  }
+
+  .envelope-open {
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .skeleton {
+    background: var(--surface-sunken);
+    border-radius: 6px;
+    animation: skeleton-pulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes skeleton-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+}
+
+/* Every bit of movement collapses to its end state. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

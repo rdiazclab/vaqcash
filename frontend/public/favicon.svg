@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="VaqCash">
+  <title>VaqCash</title>
+  <!-- Favicon build: a separate, reduced drawing, not the mark shrunk down.
+       Geometry snapped to the 16px pixel grid (2 viewBox units = 1 device px).
+       Everything is a path on purpose: some rasterizers mishandle <rect>. -->
+  <path d="M7 0 H25 A7 7 0 0 1 32 7 V25 A7 7 0 0 1 25 32 H7 A7 7 0 0 1 0 25 V7 A7 7 0 0 1 7 0 Z" fill="#B0203F"/>
+  <!-- ears -->
+  <ellipse cx="4.8" cy="13" rx="5.2" ry="3.1" fill="#FAFAF8" transform="rotate(-30 4.8 13)"/>
+  <ellipse cx="27.2" cy="13" rx="5.2" ry="3.1" fill="#FAFAF8" transform="rotate(30 27.2 13)"/>
+  <!-- head: wide, flat chin, so the muzzle stays fully enclosed in white -->
+  <path d="M16 4 C23 4 27 8 27 13.5 C27 18 26.6 21.5 25.4 24.2 C23.8 27.6 20.4 29 16 29 C11.6 29 8.2 27.6 6.6 24.2 C5.4 21.5 5 18 5 13.5 C5 8 9 4 16 4 Z" fill="#FAFAF8"/>
+  <!-- one brow patch, kept a full pixel clear of the silhouette edge -->
+  <path d="M12.8 6.4 C15.8 6.9 16 10.6 13.4 12 C10.9 13.3 8.8 11.9 9 9.3 C9.2 7.1 10.8 6.1 12.8 6.4 Z" fill="#B0203F"/>
+  <!-- eyes: pixel-snapped 2x2 px blocks at 16px, so they stay solid ink -->
+  <path d="M11.2 12 H12.8 A1.2 1.2 0 0 1 14 13.2 V14.8 A1.2 1.2 0 0 1 12.8 16 H11.2 A1.2 1.2 0 0 1 10 14.8 V13.2 A1.2 1.2 0 0 1 11.2 12 Z" fill="#17171A"/>
+  <path d="M19.2 12 H20.8 A1.2 1.2 0 0 1 22 13.2 V14.8 A1.2 1.2 0 0 1 20.8 16 H19.2 A1.2 1.2 0 0 1 18 14.8 V13.2 A1.2 1.2 0 0 1 19.2 12 Z" fill="#17171A"/>
+  <!-- muzzle: one solid bar, no nostrils (they dissolve below 24px) -->
+  <path d="M11.5 20 H20.5 A2.5 2.5 0 0 1 20.5 25 H11.5 A2.5 2.5 0 0 1 11.5 20 Z" fill="#B0203F"/>
+</svg>

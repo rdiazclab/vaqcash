@@ -1,0 +1,14 @@
+{
+  "name": "VaqCash",
+  "short_name": "VaqCash",
+  "description": "Junta los aportes de un grupo y mantenlos sellados hasta que abras la cajita.",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#B0203F",
+  "background_color": "#FAFAF8",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

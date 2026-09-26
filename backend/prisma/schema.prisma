@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  /// Cobrado con éxito pero llegó después de abrir el cofre: hay que reembolsar.
+  VOIDED
+}
+
+enum WalletTxType {
+  /// Traspaso del total de una cajita revelada al saldo del organizador.
+  REVEAL_PAYOUT
+  /// Retiro simulado del saldo. Se escribe con amountCents NEGATIVO.
+  WITHDRAWAL
+  /// Corrección manual de operaciones. Nunca la genera el flujo normal.
+  ADJUSTMENT
+}
+
+enum AuditAction {
+  CONTRIBUTION_CREATED
+  PAYMENT_SETTLED
+  PAYMENT_DECLINED
+  PAYMENT_VOIDED
+  EVENT_REVEALED
+  WALLET_CREDITED
+  WALLET_WITHDRAWN
+}
+
+/// Organizador. Dueño de cajitas y de una única wallet.
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  displayName  String
+  createdAt    DateTime @default(now())
+
+  wallet Wallet?
+  events Event[]
+
+  @@index([email])
+}
+
+/// Saldo disponible. El balance es un CACHÉ de la suma del ledger:
+/// la verdad contable vive en WalletTransaction, no aquí.
+model Wallet {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balanceCents Int      @default(0)
+  currency     String   @default("COP")
+  updatedAt    DateTime @updatedAt
+
+  transactions WalletTransaction[]
+}
+
+/// Ledger append-only. Cada movimiento de dinero deja una fila aquí.
+model WalletTransaction {
+  id             String       @id @default(cuid())
+  walletId       String
+  wallet         Wallet       @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  eventId        String?
+  event          Event?       @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  amountCents    Int
+  type           WalletTxType
+  /// Clave de idempotencia (p.ej. "reveal:<eventId>"). El UNIQUE es lo que
+  /// garantiza pago exactamente-una-vez aunque dos revelaciones corran en paralelo.
+  idempotencyKey String       @unique
+  createdAt      DateTime     @default(now())
+
+  @@index([walletId, createdAt])
+}
+
+/// Cajita de recolección.
+model Event {
+  id                String    @id @default(cuid())
+  /// Identificador público del link compartible: /caja/:uuid. Distinto del id interno.
+  uuid              String    @unique @default(uuid())
+  slug              String    @unique
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title             String
+  description       String?
+  currency          String    @default("COP")
+  revealAt          DateTime?
+  isRevealed        Boolean   @default(false)
+  revealedAt        DateTime?
+  /// Total liquidado a la wallet al revelar. Null mientras siga sellada.
+  settledTotalCents Int?
+  createdAt         DateTime  @default(now())
+
+  contributions      Contribution[]
+  walletTransactions WalletTransaction[]
+  auditLogs          AuditLog[]
+
+  @@index([userId, createdAt])
+  @@index([uuid])
+}
+
+/// Aporte. `displayName` es lo ÚNICO que la UI puede mostrar.
+/// La identidad real de un aporte anónimo vive en AuditLog, nunca aquí.
+model Contribution {
+  id          String        @id @default(cuid())
+  eventId     String
+  event       Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  amountCents Int
+  /// Lo que se pinta en pantalla: el nombre elegido, o "Anónimo".
+  displayName String
+  isAnonymous Boolean       @default(false)
+  message     String?
+  status      PaymentStatus @default(PENDING)
+  paymentRef  String?
+  createdAt   DateTime      @default(now())
+
+  auditLogs AuditLog[]
+
+  @@index([eventId, status])
+}
+
+/// Registro inmutable. Append-only: sin updatedAt y sin operaciones de escritura
+/// más allá del insert. Guarda la identidad REAL incluso cuando la UI dice "Anónimo",
+/// y nunca se expone por la API del organizador.
+model AuditLog {
+  id              String        @id @default(cuid())
+  action          AuditAction
+  eventId         String?
+  event           Event?        @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  contributionId  String?
+  contribution    Contribution? @relation(fields: [contributionId], references: [id], onDelete: SetNull)
+  /// Identidad real del remitente, aunque haya aportado como anónimo.
+  realSenderName  String?
+  realSenderEmail String?
+  ipAddress       String?
+  userAgent       String?
+  /// Contexto adicional del evento auditado (montos, referencias, motivo).
+  metadata        Json?
+  createdAt       DateTime      @default(now())
+
+  @@index([eventId, createdAt])
+  @@index([contributionId])
+}

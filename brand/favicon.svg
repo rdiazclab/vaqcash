@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="VaqCash">
+  <title>VaqCash</title>
+  <!-- El mark aprobado encajado en la teja carmin. Teja como <path>: sips dibuja mal <rect rx>. -->
+  <defs>
+    <clipPath id="vcFav">
+      <path d="M64 20 C90 20 108 36 108 58 C108 74 100 88 88 95 C81 99 73 101 64 101 C55 101 47 99 40 95 C28 88 20 74 20 58 C20 36 38 20 64 20 Z"/>
+    </clipPath>
+  </defs>
+  <path d="M7 0 H25 A7 7 0 0 1 32 7 V25 A7 7 0 0 1 25 32 H7 A7 7 0 0 1 0 25 V7 A7 7 0 0 1 7 0 Z" fill="#B0203F"/>
+  <g transform="translate(0.69 0.95) scale(0.239)">
+    <path d="M40 38 C32 30 26 20 24 12 C23.4 9 27 8.4 29.6 10.6 C37 17 47 26 54 32 Z" fill="#F4F4F2"/>
+    <path d="M88 38 C96 30 102 20 104 12 C104.6 9 101 8.4 98.4 10.6 C91 17 81 26 74 32 Z" fill="#F4F4F2"/>
+    <ellipse cx="21" cy="60" rx="18" ry="10" fill="#F4F4F2" transform="rotate(-14 21 60)"/>
+    <ellipse cx="107" cy="60" rx="18" ry="10" fill="#F4F4F2" transform="rotate(14 107 60)"/>
+    <path d="M64 20 C90 20 108 36 108 58 C108 74 100 88 88 95 C81 99 73 101 64 101 C55 101 47 99 40 95 C28 88 20 74 20 58 C20 36 38 20 64 20 Z" fill="#F4F4F2"/>
+    <g clip-path="url(#vcFav)">
+      <path d="M26 28 C36 21 48 25 47 35 C46 44 38 49 29 47 C20 45 18 34 26 28 Z" fill="#E85A76"/>
+      <path d="M94 46 C106 45 113 57 107 69 C101 80 88 77 88 65 C88 56 88 47 94 46 Z" fill="#E85A76"/>
+      <path d="M26 62 C34 60 40 68 36 75 C32 81 24 79 22 72 C21 67 22 63 26 62 Z" fill="#E85A76"/>
+    </g>
+    <ellipse cx="48" cy="58" rx="5" ry="5.6" fill="#121213"/>
+    <ellipse cx="80" cy="58" rx="5" ry="5.6" fill="#121213"/>
+    <ellipse cx="64" cy="86" rx="36" ry="20" fill="#E85A76"/>
+    <ellipse cx="52" cy="84" rx="4.2" ry="5.8" fill="#F4F4F2" transform="rotate(-12 52 84)"/>
+    <ellipse cx="76" cy="84" rx="4.2" ry="5.8" fill="#F4F4F2" transform="rotate(12 76 84)"/>
+  </g>
+</svg>

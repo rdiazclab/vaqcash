@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+.env.local
+
+# Artefactos de prueba: se regeneran, no se versionan
+e2e/screenshots/
+**/e2e/screenshots/
+test-results/
+**/test-results/
+playwright-report/
+**/playwright-report/
+
+.DS_Store
+*.log
